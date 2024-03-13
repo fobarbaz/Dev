@@ -69,7 +69,7 @@ class InvestorBlastController extends AdminController
 
         $settingBlast = SettingBlast::query()   
             ->first();
-        //dd($settingBlast->toArray());
+       
 
         $sender = $setting->value('streams::email');
         $senderName = $setting->value('streams::sender');
