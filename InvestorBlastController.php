@@ -26,9 +26,6 @@ class InvestorBlastController extends AdminController
     public function blast($slug, Mailer $mailer, SettingRepositoryInterface $setting)
     {
 
-        // $investors = InvestorParent::query()
-        //     ->find($slug);
-
         $investor = InvestorParent::query()
             ->where('status', true)
             ->find($slug)
@@ -55,7 +52,7 @@ class InvestorBlastController extends AdminController
                 ];
             });
 
-            //dd($investor->toArray());
+            
 
 
         if ($investor->count() == '' || $investor->count() == null) {
@@ -77,49 +74,19 @@ class InvestorBlastController extends AdminController
         $sender = $setting->value('streams::email');
         $senderName = $setting->value('streams::sender');
 
-        // foreach ($subscribe as $subscribes) {
-        //     $mailer->to($subscribes->email)
-        //         ->queue(new \App\Mail\mailBlastNotif([
-        //             'documents' => $investor->toArray(),
-        //             'subsName' => $subscribes->name,
-        //             'subsSalutation' => $subscribes->salutation,
-        //             'mailSubject' => $settingBlast->title,
-        //             'mailDesc' => $settingBlast->mail_desc,
-        //             'unsubscribe_url' => URL::signedRoute('page::unsubscribe',['email' => $subscribes->email]),
-        //         ],
-                
-        //         $sender, $senderName));
-        // }
-
-        $mailList = [
-            'kenrangga.samcgi@gmail.com',
-            'eko.samcgi.dev@gmail.com',
-            'agus.saminteractive@gmail.com',
-           
-        ];
-        //$data = request($mailList);
-
-        $data = collect($mailList)->toArray();
-        
-
-        //dd($data);
-
-        foreach ($data as $mailLists) {
-            $mailer->to([$mailLists])
-            ->queue(new \App\Mail\mailBlastNotif([
-    
+        foreach ($subscribe as $subscribes) {
+            $mailer->to($subscribes->email)
+                ->queue(new \App\Mail\mailBlastNotif([
                     'documents' => $investor->toArray(),
-                    'subsName' => $subscribe->name,
-                    'subsSalutation' => $subscribe->salutation,
+                    'subsName' => $subscribes->name,
+                    'subsSalutation' => $subscribes->salutation,
                     'mailSubject' => $settingBlast->title,
                     'mailDesc' => $settingBlast->mail_desc,
-                    'unsubscribe_url' => URL::signedRoute('page::unsubscribe',['email' => $subscribe->email]),
-    
-            ], $sender, $senderName));
-            
-            
+                    'unsubscribe_url' => URL::signedRoute('page::unsubscribe',['email' => $subscribes->email]),
+                ],
+                
+                $sender, $senderName));
         }
-        
 
             return $this->redirect->to('admin/investor_relation/investor_contents')
                 ->with([
